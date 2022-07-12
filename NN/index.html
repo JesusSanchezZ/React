@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./plot.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        html, body {
+            background-color: #21232a;
+            color: white;
+            font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            font-size: 1.3rem;
+            padding: 50px;
+        }
+        canvas { 
+            border: 1px solid white;
+            background-color: whitesmoke;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="200" height="200"></canvas>
+    <canvas id="canvas1" style="width: 100%;max-width:700px;"></canvas>
+    <div id="plot" style="width:100%;max-width:700px"></div>
+    <p>umbral <input type="number" id="umbral" style="width: 40px;"></p>
+    <p>entrada 
+        [<input type="number" id="i0" style="width: 25px">,
+        <input type="number" id="i1" style="width:  25px">,
+        <input type="number" id="i2" style="width:  25px">,
+        <input type="number" id="i3" style="width:  25px">,
+        <input type="number" id="i4" style="width:  25px">]
+    </p>
+    <p>Pesos  
+        [<input type="number" id="w0" style="width: 35px">,
+        <input type="number" id="w1" style="width: 35px">,
+        <input type="number" id="w2" style="width: 35px">,
+        <input type="number" id="w3" style="width: 35px">,
+        <input type="number" id="w4" style="width: 35px">]
+    </p>
+    <p><button>Calcula</button></p>
+    <p id="resultado"></p>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ff0000';
+        ctx.fillRect(0,0,150,75);
+
+        ctx.moveTo(50,50);
+        ctx.lineTo(150,95);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(95, 50, 40, 0, 2 * Math.PI);
+        ctx.stroke();
+
+        ctx.fillStyle = 'blue';
+        ctx.beginPath();
+        ctx.arc(95, 50, 3, 0, Math.PI * 2);
+        ctx.stroke();
+
+        const plotter = new XYPlotter('canvas1');
+        plotter.transformXY();
+
+        const xMax = plotter.xMax;
+        const yMax = plotter.yMax;
+        const xMin = plotter.xMin;
+        const yMin = plotter.yMin;
+
+        const numPoints = 500;
+        const xPoints = [];
+        const yPoints = [];
+        for(let i=0; i<numPoints; i++){
+            xPoints[i] = Math.random() * xMax;
+            yPoints[i] = Math.random() * yMax;
+        }
+
+        function f(x) {
+            return 1.2 * x + 0.5;
+        }
+
+        let desired1 = [];
+        for(let i=0; i<numPoints;i++){
+            desired1[i] = 0;
+            if(yPoints[i] > f(xPoints[i])){ desired1[i] = 1;}
+        }
+
+        plotter.plotPoints(numPoints,xPoints,yPoints, desired1);
+        console.log(Math.pow(2,3));
+
+        // for(let i=0; i<numPoints; i++) {
+        //     let color = 'blue';
+        //     if(desired1[i]) color = 'black';
+        //     plotter.plotPoints(xPoints[i],yPoints[i], color);
+        // }
+        console.log({xPoints, yPoints});
+
+
+            // ctx.fillStyle = "yellow";
+            // ctx.fillRect(0, 0, 250, 100)
+
+            // ctx.transform(1, 0.5, -0.5, 1, 30, 10);
+            // ctx.fillStyle = "red";
+            // ctx.fillRect(0, 0, 250, 100);
+
+            // ctx.transform(1, 0.5, -0.5, 1, 30, 10);
+            // ctx.fillStyle = "blue";
+            // ctx.fillRect(0, 0, 250, 100);
+
+            // ctx.transform(1,0.5,0,-0.5,1,yMax);
+            // ctx.fillStyle = 'black';
+            // ctx.fillRect(0,0,250,100);
+
+    </script>
+    
+    <script>
+        const slope = Math.random() * 2;
+        const b = Math.random() * 20 -10;
+        var xValues = [];
+        var yValues = [];
+        var yValuesL = [];
+
+        for(var x = 0; x < 500; x += 1){
+            xValues.push(Math.random() * 300);
+            yValues.push(Math.random() * 150);
+        }
+
+        function f(x) {
+            return x * slope + b;
+        }
+
+        let desired = [];
+        for(let i = 0;i < 500; i++){
+            desired[i]= 0;
+            if( yValues[i] > f(xValues[i])) { desired[i] = 1}
+            yValuesL[i] = f(xValues[i]);
+        }
+
+        let yValuesF = [];
+
+        for(let i=0; i<500; i++){
+            if(desired[i]) yValuesF[i] = yValues[i];
+        }
+
+        var data = {
+            x: xValues,
+            y: yValues,
+            mode: 'markers',
+            type: 'scatter'
+        };
+
+        var data1 = {
+            x: xValues,
+            y: yValuesF,
+            mode: 'lines',
+            type: 'scatter'
+        };
+
+        var data2 = {
+            x: xValues,
+            y: yValuesL,
+            mode: 'lines',
+            type: 'scatter'
+        };
+
+        var layout = { title: `${slope}*x ${ (b<0)?'-':'+'} ${(b>=0)?b:-b}`};
+
+        var dataF = [ data, data1, data2];
+
+        Plotly.newPlot('plot', dataF, layout);
+    </script>
+    <script>
+        const threshold = 1.5;
+        const inputs = [1,0,1,0,1];
+        const weights = [0.7,0.6,0.5,0.3,0.4];
+        const inputsT = [];
+        const weightsT = [];
+        // let uno = document.querySelector('#a0'); 
+        // uno.value = inputs[0];
+        const umbral = document.querySelector('#umbral');
+        umbral.value = threshold;
+
+        for(let i=0; i<inputs.length; i++){
+            inputsT[i] = document.querySelector(`#i${i}`);
+            weightsT[i] = document.querySelector(`#w${i}`);
+        }
+
+        
+
+        let sum = 0;
+        for(let i= 0; i<inputs.length; i++){
+            inputsT[i].value = inputs[i];
+            weightsT[i].value = weights[i];
+            sum += inputs[i] * weights[i];
+        }
+
+        const activate = (sum > 1.5);
+
+        const result = document.querySelector('#resultado');
+        result.innerText = `Suma = ${Math.round(sum)}, Resultado= ${activate}`;
+
+        const but = document.querySelector('button');
+
+        but.addEventListener('click', () =>{
+            let sum = 0;
+            for(let i=0; i<inputs.length; i++){
+                sum += inputsT[i].value * weightsT[i].value;
+            }
+
+            result.innerHTML = `Suma = ${sum}, Resultado = ${(sum > umbral.value)}`;
+            console.log(weightsT[Math.floor(Math.random() * 5)].value);
+        });
+    </script>
+</body>
+</html>
