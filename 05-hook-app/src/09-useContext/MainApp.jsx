@@ -1,13 +1,12 @@
-import { Link, Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { AboutPage, HomePage, LoginPage } from '../09-useContext';
+import { Navbar } from "../09-useContext";
+import { UserProvider } from "./context/UserProvider";
 
 export const MainApp = () => {
     return (
-        <>
-            <h1>MainApp</h1>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-            <Link to="/login">Login</Link>
+        <UserProvider>
+            <Navbar />
             <hr />
 
             <Routes>
@@ -18,6 +17,6 @@ export const MainApp = () => {
                 {/* <Route path="/*" element={ <LoginPage/> } /> */}
                 <Route path="/*" element={ <Navigate to="/about" /> } />
             </Routes>
-        </>
+        </UserProvider>
     );
 }
