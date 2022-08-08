@@ -1,14 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { JournalApp } from './JournalApp';
+import { store } from './store';
 import './styles.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <JournalApp />
-    </BrowserRouter>
+    <Provider store={ store }>
+      <BrowserRouter>
+        <JournalApp />
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 )
 
@@ -24,7 +28,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
  * Instalación de React Router
  *  npm install react-router-dom@6       // instala la versión 6 de React router
  * 
- * Instalación de material ui
+ * Instalación de material ui: https://mui.com
  *  npm install @mui/material @emotion/react @emotion/styled
  * Agregar al index.html la fuente Roboto
  *  <link
@@ -34,4 +38,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
  *  
  * Instalación de iconos
  *  npm install @mui/icons-material
+ * 
+ * Instalación de Redux Toolkit
+ *  npm install @reduxjs/toolkit react-redux
+ * 
+ * Instalación de 
  */
