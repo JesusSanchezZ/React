@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { startAfter } from 'firebase/firestore/lite';
 
 export const journalSlice = createSlice({
    name: 'journal',
@@ -47,18 +48,35 @@ export const journalSlice = createSlice({
         // TODO: Mostrar nota de actualización
         state.messageSaved = `${ action.payload.title }, actualizada correctamente`;
        },
+       setPhotosToActiveNote: ( state, action ) => {
+        state.active.imageUrls = [ ...state.active.imageUrls, ...action.payload ];
+        state.isSaving = false;
+       },
+       clearNotesLogout: (state) => {
+        state.isSaving = false;
+        state.messageSaved = '';
+        state.notes = [];
+        state.active = null;
+       },
        deleteNoteById: (state, action) => {
-
+        // state.notes = state.notes.map( note => {
+        //     if( note.id === action.payload.id ) return;
+        //     return note;
+        // });
+        state.active = null;
+        state.notes = state.notes.filter( x => x.id !== action.payload.id );
        },
    }
 })
 
 export const {
     addNewEmptyNote,
+    clearNotesLogout,
     deleteNoteById,
     savingNewNote,
     setActiveNote,
-    setSaving,
     setNotes,
-    updateNote
+    setPhotosToActiveNote,
+    setSaving,
+    updateNote,
  } = journalSlice.actions

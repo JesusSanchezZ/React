@@ -42,5 +42,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
  * Instalación de Redux Toolkit
  *  npm install @reduxjs/toolkit react-redux
  * 
- * Instalación de 
+ * Instalación de sweetalert2
+ *  npm install sweetalert2
+ *  
+ * 
  */
